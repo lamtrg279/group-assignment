@@ -1,5 +1,8 @@
 package entities;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -12,6 +15,7 @@ public class Appliance implements Serializable {
 	private String id;
 	private double price;
 	private int quantity;
+	private int type;
 	private static final String APPLIANCE_STRING = "A";
 	private static int idCounter;
 
@@ -25,11 +29,12 @@ public class Appliance implements Serializable {
 	 * @param refrigeratorCapacity       capacity of appliance
 	 * @param furnaceMaximumHeatingOuput heat output of appliance
 	 */
-	public Appliance(String brand, String model, double price) {
+	public Appliance(String brand, String model, double price, int type) {
 		this.brand = brand;
 		this.model = model;
 		this.id = APPLIANCE_STRING + ++idCounter;
 		this.price = price;
+		this.type = type;
 		this.quantity = 1;
 	}
 
@@ -76,6 +81,14 @@ public class Appliance implements Serializable {
 		this.quantity = quantity;
 	}
 
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -105,4 +118,13 @@ public class Appliance implements Serializable {
 		}
 		return true;
 	}
+
+	public static void save(ObjectOutputStream output) throws IOException {
+		output.writeObject(idCounter);
+	}
+
+	public static void retrieve(ObjectInputStream input) throws ClassNotFoundException, IOException {
+		idCounter = (int) input.readObject();
+	}
+
 }

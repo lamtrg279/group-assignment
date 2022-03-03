@@ -89,4 +89,5 @@ public class Customer implements Serializable {
 	public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
 		idCounter = (int) input.readObject();
 	}
+
 }

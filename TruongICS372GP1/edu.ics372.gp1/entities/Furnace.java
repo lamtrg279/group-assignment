@@ -6,8 +6,8 @@ public class Furnace extends Appliance implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private double maximumHeatOutput;
 
-	public Furnace(String brand, String model, double price, double maximumHeatOutput) {
-		super(brand, model, price);
+	public Furnace(String brand, String model, double price, int type, double maximumHeatOutput) {
+		super(brand, model, price, type);
 		this.maximumHeatOutput = maximumHeatOutput;
 	}
 

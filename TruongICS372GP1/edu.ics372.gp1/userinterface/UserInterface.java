@@ -185,7 +185,7 @@ public class UserInterface {
 		Request.instance().setAppliancePrice(getNumber("Enter price"));
 		Result result = new Result();
 		Request.instance().setApplianceType(getNumber(
-				"Enter type of appliance. 1 for ClothWasher, 2 for ClothDryer, 3 for KitchenRange, 4 for DishWasher, 5 for Refrigerator, 6 for Furnace"));
+				"Enter type of appliance: 1 for ClothWasher, 2 for ClothDryer, 3 for KitchenRange, 4 for DishWasher, 5 for Refrigerator, 6 for Furnace"));
 		switch (Request.instance().getApplianceType()) {
 		case 1:
 			Request.instance().setApplianceRepairCost(getNumber("Enter repair plan cost for cloth washer"));
@@ -215,15 +215,68 @@ public class UserInterface {
 	}
 
 	/**
-	 * Get and print all appliances
+	 * Get and print all or some appliances
 	 */
 	public void getAppliances() {
 		Iterator<Result> iterator = company.getAppliances();
+		Request.instance().setApplianceType(getNumber(
+				"Enter type of appliance: 0 for all appliances, 1 for ClothWasher, 2 for ClothDryer, 3 for KitchenRange, 4 for DishWasher, 5 for Refrigerator, 6 for Furnace"));
 		System.out.println("List of appliances (brand, name, id, price, quantity");
 		while (iterator.hasNext()) {
-			Result result = iterator.next();
-			System.out.println(result.getApplianceBrand() + " " + result.getApplianceName() + " "
-					+ result.getApplianceId() + " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+			if (Request.instance().getApplianceType() == 0) {
+				Result result = iterator.next();
+				System.out.println(
+						result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+								+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+			}
+			if (Request.instance().getApplianceType() == 1) {
+				Result result = iterator.next();
+				if (result.getApplianceType() == 1) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
+			if (Request.instance().getApplianceType() == 2) {
+				Result result = iterator.next();
+				if (result.getApplianceType() == 2) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
+			if (Request.instance().getApplianceType() == 3) {
+				Result result = iterator.next();
+				if (result.getApplianceType() == 3) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
+			if (Request.instance().getApplianceType() == 4) {
+				Result result = iterator.next();
+				if (result.getApplianceType() == 4) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
+			if (Request.instance().getApplianceType() == 5) {
+				Result result = iterator.next();
+				if (result.getApplianceType() == 5) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
+			if (Request.instance().getApplianceType() == 6) {
+				Result result = iterator.next();
+				if (result.getApplianceType() == 6) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
 		}
 		System.out.println("End of listing");
 	}
@@ -248,13 +301,50 @@ public class UserInterface {
 
 	public void getCustomers() {
 		Iterator<Result> iterator = company.getCustomers();
-		System.out.println("List of customers (name, address, phone, id");
+		System.out.println("List of customers (name, address, phone, id)");
 		while (iterator.hasNext()) {
 			Result result = iterator.next();
-			System.out.println(result.getCustomerName() + " " + result.getCustomerAddress() + " "
-					+ result.getCustomerPhone() + " " + result.getCustomerId());
+			System.out.println(result.getCustomerName() + ", " + result.getCustomerAddress() + ", "
+					+ result.getCustomerPhone() + ", " + result.getCustomerId());
 		}
 		System.out.println("End of listing");
+	}
+
+	public void getUsersInRepairPlans() {
+		Iterator<Result> iterator = company.getUsersInRepairPlans();
+		System.out.println("List of customers (name, address, phone, id, brand, model, monthly cost)");
+		while (iterator.hasNext()) {
+			Result result = iterator.next();
+			System.out.println(result.getCustomerName() + ", " + result.getCustomerAddress() + ", "
+					+ result.getCustomerPhone() + ", " + result.getCustomerId() + ", " + result.getApplianceBrand()
+					+ ", " + result.getApplianceName() + ", " + result.getApplianceRepairCost());
+		}
+		System.out.println("End of listing");
+	}
+
+	public void enrollInRepairPlan() {
+		Request.instance().setCustomerId(getToken("Enter customer ID"));
+		Request.instance().setApplianceId(getToken("Enter appliance ID"));
+		Result result = company.enrollRepairPlan(Request.instance());
+		switch (result.getResultCode()) {
+		case Result.APPLIANCE_NOT_FOUND:
+			System.out.println("No such appliance with id " + Request.instance().getApplianceId() + " in Company");
+			break;
+		case Result.CUSTOMER_NOT_FOUND:
+			System.out.println("No such customer with id " + Request.instance().getCustomerId() + " in Company");
+			break;
+		case Result.APPLIANCE_NO_REPAIR_PLAN:
+			System.out.println(
+					"Appliance with id " + Request.instance().getApplianceId() + " doesn't have a repair plan");
+			break;
+		case Result.OPERATION_COMPLETED:
+			System.out.println("A repair plan has been placed for customer " + result.getCustomerName()
+					+ " for appliance " + result.getApplianceName());
+			break;
+		default:
+			System.out.println("An error has occured");
+
+		}
 	}
 
 	/**
@@ -315,7 +405,7 @@ public class UserInterface {
 //				fullfillBackorder();
 				break;
 			case ENROLL_IN_REPAIR_PLAN:
-//				enrollRepairPlan();
+				enrollInRepairPlan();
 				break;
 			case WITHDRAW_CUSTOMER_FROM_REPAIR_PLAN:
 //				withdrawFromRepairPlan();
@@ -330,7 +420,7 @@ public class UserInterface {
 				getAppliances();
 				break;
 			case LIST_ALL_USERS_IN_REPAIR_PLANS:
-//				listUsersInRepairPlans();
+				getUsersInRepairPlans();
 				break;
 			case LIST_CUSTOMERS:
 				getCustomers();

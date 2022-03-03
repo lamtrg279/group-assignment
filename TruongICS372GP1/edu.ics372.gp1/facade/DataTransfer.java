@@ -6,6 +6,7 @@ import entities.ClothWasher;
 import entities.Customer;
 import entities.Furnace;
 import entities.Refrigerator;
+import entities.RepairPlan;
 
 /**
  * The DataTransfer class is used to facilitate data transfer between Company
@@ -150,6 +151,7 @@ public abstract class DataTransfer {
 		applianceName = appliance.getModel();
 		appliancePrice = appliance.getPrice();
 		applianceQuantity = appliance.getQuantity();
+		applianceType = appliance.getType();
 		if (appliance instanceof ClothWasher) {
 			applianceRepairCost = ((ClothWasher) appliance).getRepairCost();
 		}
@@ -174,6 +176,34 @@ public abstract class DataTransfer {
 		customerName = customer.getName();
 		customerPhone = customer.getPhone();
 		customerAddress = customer.getAddress();
+	}
+
+	public void setRepairPlanField(RepairPlan repairPlan) {
+		Customer customer = repairPlan.getCustomer();
+		customerId = customer.getId();
+		customerName = customer.getName();
+		customerPhone = customer.getPhone();
+		customerAddress = customer.getAddress();
+		Appliance appliance = repairPlan.getAppliance();
+		applianceId = appliance.getId();
+		applianceBrand = appliance.getBrand();
+		applianceName = appliance.getModel();
+		appliancePrice = appliance.getPrice();
+		applianceQuantity = appliance.getQuantity();
+		applianceType = appliance.getType();
+		if (appliance instanceof ClothWasher) {
+			applianceRepairCost = ((ClothWasher) appliance).getRepairCost();
+		}
+		if (appliance instanceof ClothDryer) {
+			applianceRepairCost = ((ClothDryer) appliance).getRepairCost();
+		}
+		if (appliance instanceof Refrigerator) {
+			applianceCapacity = ((Refrigerator) appliance).getCapacity();
+		}
+		if (appliance instanceof Furnace) {
+			applianceMaximumHeatingOutput = ((Furnace) appliance).getMaximumHeatOutput();
+		}
+
 	}
 
 	/**

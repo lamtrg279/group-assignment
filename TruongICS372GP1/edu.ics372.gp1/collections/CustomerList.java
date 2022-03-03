@@ -40,4 +40,14 @@ public class CustomerList implements Iterable<Customer>, Serializable {
 	public Iterator<Customer> iterator() {
 		return customers.iterator();
 	}
+
+	public Customer search(String customerId) {
+		for (Iterator<Customer> iterator = customers.iterator(); iterator.hasNext();) {
+			Customer customer = iterator.next();
+			if (customer.getId().equals(customerId)) {
+				return customer;
+			}
+		}
+		return null;
+	}
 }

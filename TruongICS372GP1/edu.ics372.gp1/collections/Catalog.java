@@ -41,4 +41,14 @@ public class Catalog implements Iterable<Appliance>, Serializable {
 		return appliances.iterator();
 	}
 
+	public Appliance search(String applianceId) {
+		for (Iterator<Appliance> iterator = appliances.iterator(); iterator.hasNext();) {
+			Appliance appliance = iterator.next();
+			if (appliance.getId().equals(applianceId)) {
+				return appliance;
+			}
+		}
+		return null;
+	}
+
 }

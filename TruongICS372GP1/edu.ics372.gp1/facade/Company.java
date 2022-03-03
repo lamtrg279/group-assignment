@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import collections.Catalog;
 import collections.CustomerList;
+import collections.RepairPlanList;
 import entities.Appliance;
 import entities.ClothDryer;
 import entities.ClothWasher;
@@ -18,8 +19,10 @@ import entities.DishWasher;
 import entities.Furnace;
 import entities.KitchenRange;
 import entities.Refrigerator;
+import entities.RepairPlan;
 import iterators.SafeApplianceIterator;
 import iterators.SafeCustomerIterator;
+import iterators.SafeRepairPlanIterator;
 
 /**
  * The face class handling all requests from users
@@ -28,6 +31,7 @@ public class Company implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Catalog catalog = Catalog.getInstance();
 	private CustomerList customers = CustomerList.getInstance();
+	private RepairPlanList repairPlans = RepairPlanList.getInstance();
 	private static Company company;
 
 	/**
@@ -65,27 +69,28 @@ public class Company implements Serializable {
 		Appliance appliance = new Appliance();
 		if (request.getApplianceType() == 1) {
 			appliance = new ClothWasher(request.getApplianceBrand(), request.getApplianceName(),
-					request.getAppliancePrice(), request.getApplianceRepairCost());
+					request.getAppliancePrice(), request.getApplianceType(), request.getApplianceRepairCost());
 		}
 		if (request.getApplianceType() == 2) {
 			appliance = new ClothDryer(request.getApplianceBrand(), request.getApplianceName(),
-					request.getAppliancePrice(), request.getApplianceRepairCost());
+					request.getAppliancePrice(), request.getApplianceType(), request.getApplianceRepairCost());
 		}
 		if (request.getApplianceType() == 3) {
 			appliance = new KitchenRange(request.getApplianceBrand(), request.getApplianceName(),
-					request.getAppliancePrice());
+					request.getAppliancePrice(), request.getApplianceType());
 		}
 		if (request.getApplianceType() == 4) {
 			appliance = new DishWasher(request.getApplianceBrand(), request.getApplianceName(),
-					request.getAppliancePrice());
+					request.getAppliancePrice(), request.getApplianceType());
 		}
 		if (request.getApplianceType() == 5) {
 			appliance = new Refrigerator(request.getApplianceBrand(), request.getApplianceName(),
-					request.getAppliancePrice(), request.getApplianceCapacity());
+					request.getAppliancePrice(), request.getApplianceType(), request.getApplianceCapacity());
 		}
 		if (request.getApplianceType() == 6) {
 			appliance = new Furnace(request.getApplianceBrand(), request.getApplianceName(),
-					request.getAppliancePrice(), request.getApplianceMaximumHeatingOutput());
+					request.getAppliancePrice(), request.getApplianceType(),
+					request.getApplianceMaximumHeatingOutput());
 		}
 		if (catalog.insertAppliance(appliance)) {
 			result.setResultCode(Result.OPERATION_COMPLETED);
@@ -117,6 +122,30 @@ public class Company implements Serializable {
 		return result;
 	}
 
+	public Result enrollRepairPlan(Request request) {
+		Result result = new Result();
+		Customer customer = customers.search(request.getCustomerId());
+		if (customer == null) {
+			result.setResultCode(Result.CUSTOMER_NOT_FOUND);
+			return result;
+		}
+		result.setCustomerField(customer);
+		Appliance appliance = catalog.search(request.getApplianceId());
+		if (appliance == null) {
+			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
+			return result;
+		}
+		if (appliance.getType() != 1 && appliance.getType() != 2) {
+			result.setResultCode(Result.APPLIANCE_NO_REPAIR_PLAN);
+			return result;
+		}
+		result.setApplianceField(appliance);
+		RepairPlan repairPlan = new RepairPlan(customer, appliance);
+		repairPlans.addRepairPlan(repairPlan);
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		return result;
+	}
+
 	/**
 	 * Retrieves a deserialized version of the library from disk
 	 * 
@@ -128,6 +157,7 @@ public class Company implements Serializable {
 			ObjectInputStream input = new ObjectInputStream(file);
 			company = (Company) input.readObject();
 			Customer.retrieve(input);
+			Appliance.retrieve(input);
 			return company;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -149,6 +179,7 @@ public class Company implements Serializable {
 			ObjectOutputStream output = new ObjectOutputStream(file);
 			output.writeObject(company);
 			Customer.save(output);
+			Appliance.save(output);
 			file.close();
 			return true;
 		} catch (IOException ioe) {
@@ -164,4 +195,9 @@ public class Company implements Serializable {
 	public Iterator<Result> getAppliances() {
 		return new SafeApplianceIterator(catalog.iterator());
 	}
+
+	public Iterator<Result> getUsersInRepairPlans() {
+		return new SafeRepairPlanIterator(repairPlans.iterator());
+	}
+
 }
