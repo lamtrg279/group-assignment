@@ -1,5 +1,9 @@
 package facade;
 
+/**
+ * This class is used for requesting many of the results of the company system's
+ * business logic to user interface. It is a single class.
+ */
 public class Request extends DataTransfer {
 	private static Request request;
 

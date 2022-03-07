@@ -41,6 +41,13 @@ public class CustomerList implements Iterable<Customer>, Serializable {
 		return customers.iterator();
 	}
 
+	/**
+	 * Checks whether a member with a given member id exists.
+	 * 
+	 * @param memberId the id of the member
+	 * @return true iff member exists
+	 * 
+	 */
 	public Customer search(String customerId) {
 		for (Iterator<Customer> iterator = customers.iterator(); iterator.hasNext();) {
 			Customer customer = iterator.next();

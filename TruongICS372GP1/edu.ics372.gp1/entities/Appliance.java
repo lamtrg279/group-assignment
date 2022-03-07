@@ -22,12 +22,10 @@ public class Appliance implements Serializable {
 	/**
 	 * Creates a single appliance
 	 * 
-	 * @param brand                      brand of the appliance
-	 * @param model                      model of the appliance
-	 * @param price                      price of the appliance
-	 * @param washerAndDryerRepairCost   repair cost of appliance
-	 * @param refrigeratorCapacity       capacity of appliance
-	 * @param furnaceMaximumHeatingOuput heat output of appliance
+	 * @param brand brand of the appliance
+	 * @param model model of the appliance
+	 * @param price price of the appliance
+	 * @param type  type of the appliance
 	 */
 	public Appliance(String brand, String model, double price, int type) {
 		this.brand = brand;

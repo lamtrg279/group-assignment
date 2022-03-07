@@ -41,6 +41,12 @@ public class Catalog implements Iterable<Appliance>, Serializable {
 		return appliances.iterator();
 	}
 
+	/**
+	 * Search whether an appliance with a given id exists
+	 * 
+	 * @param applianceId The id of the appliance
+	 * @return true if it exists
+	 */
 	public Appliance search(String applianceId) {
 		for (Iterator<Appliance> iterator = appliances.iterator(); iterator.hasNext();) {
 			Appliance appliance = iterator.next();

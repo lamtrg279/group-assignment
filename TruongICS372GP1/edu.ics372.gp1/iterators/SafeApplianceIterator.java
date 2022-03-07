@@ -6,10 +6,19 @@ import java.util.NoSuchElementException;
 import entities.Appliance;
 import facade.Result;
 
+/**
+ * This Iterator implementation supplies a "read-only" version of Appliance
+ * objects.
+ */
 public class SafeApplianceIterator implements Iterator<Result> {
 	private Iterator<Appliance> iterator;
 	private Result result = new Result();
 
+	/**
+	 * The user of SafeApplianceIterator must supply an Iterator to Appliance
+	 * 
+	 * @param iterator Iterator<Appliance>
+	 */
 	public SafeApplianceIterator(Iterator<Appliance> iterator) {
 		this.iterator = iterator;
 	}

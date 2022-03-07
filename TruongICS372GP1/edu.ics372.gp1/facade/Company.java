@@ -122,6 +122,13 @@ public class Company implements Serializable {
 		return result;
 	}
 
+	/**
+	 * Organizes the operation for enrolling a customer in a repair plan
+	 * 
+	 * @param customerId  customer's id
+	 * @param applianceId appliance's id
+	 * @return indication on the outcome
+	 */
 	public Result enrollRepairPlan(Request request) {
 		Result result = new Result();
 		Customer customer = customers.search(request.getCustomerId());

@@ -178,6 +178,11 @@ public abstract class DataTransfer {
 		customerAddress = customer.getAddress();
 	}
 
+	/**
+	 * Sets all customer and appliance fields using the RepairPlan parameter
+	 * 
+	 * @param repairPlan The repairPlan fields should be copied
+	 */
 	public void setRepairPlanField(RepairPlan repairPlan) {
 		Customer customer = repairPlan.getCustomer();
 		customerId = customer.getId();

@@ -7,6 +7,10 @@ import java.util.List;
 
 import entities.RepairPlan;
 
+/**
+ * Maintains a lsit of RepairPlan objects. It is used by both Customer and
+ * Appliance
+ */
 public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<RepairPlan> repairPlans = new ArrayList<>();
@@ -22,6 +26,12 @@ public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
 		return repairPlanList;
 	}
 
+	/**
+	 * Add a RepairPlan object to the list
+	 * 
+	 * @param repairPlan the RepairPlan object
+	 * @return true
+	 */
 	public boolean addRepairPlan(RepairPlan repairPlan) {
 		repairPlans.add(repairPlan);
 		return true;

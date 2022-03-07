@@ -1,5 +1,6 @@
+/collections/
 /entities/
 /facade/
-/userinterface/
-/collections/
 /iterators/
+/module-info.class
+/userinterface/
