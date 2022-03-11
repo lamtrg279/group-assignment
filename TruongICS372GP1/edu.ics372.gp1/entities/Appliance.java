@@ -39,6 +39,10 @@ public class Appliance implements Serializable {
 	public Appliance() {
 	}
 
+	public void updateQuantity(int applianceQuantity) {
+		this.quantity += applianceQuantity;
+	}
+
 	public String getBrand() {
 		return brand;
 	}

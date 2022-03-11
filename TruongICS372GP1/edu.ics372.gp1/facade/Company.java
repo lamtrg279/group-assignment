@@ -104,6 +104,24 @@ public class Company implements Serializable {
 	/**
 	 * Organizes the operations for adding a member
 	 * 
+	 * @param applianceId Appliance ID
+	 * @return indication of the outcome
+	 */
+	public Result addInventory(Request request) {
+		Result result = new Result();
+		Appliance appliance = catalog.search(request.getApplianceId());
+		if (appliance == null) {
+			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
+			return result;
+		}
+		appliance.updateQuantity(request.getApplianceQuantity());
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		return result;
+	}
+
+	/**
+	 * Organizes the operations for adding a member
+	 * 
 	 * @param name    Customer name
 	 * @param address Customer address
 	 * @param phone   Customer phone

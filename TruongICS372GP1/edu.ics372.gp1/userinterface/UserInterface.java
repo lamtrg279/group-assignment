@@ -242,6 +242,24 @@ public class UserInterface {
 	}
 
 	/**
+	 * MEthod to be called for adding appliance in inventory.
+	 */
+	public void addInventory() {
+		Request.instance().setApplianceId(getToken("Enter appliance ID"));
+		Request.instance().setApplianceQuantity(getNumber("Enter quantity"));
+		Result result = company.addInventory(Request.instance());
+		switch (result.getResultCode()) {
+		case Result.APPLIANCE_NOT_FOUND:
+			System.out.println("No such appliance with id " + Request.instance().getApplianceId() + " in Company");
+			break;
+		case Result.OPERATION_COMPLETED:
+			System.out.println("Inventory has been added to model ID: " + Request.instance().getApplianceId()
+					+ " for quantity " + Request.instance().getApplianceQuantity());
+			break;
+		}
+	}
+
+	/**
 	 * Method to be called for adding a customer. Prompts the user for the
 	 * appropriate values and uses the appropriate Company method for adding the
 	 * customer.
@@ -366,7 +384,7 @@ public class UserInterface {
 				addCustomer();
 				break;
 			case ADD_SINGLE_MODEL_INVENTORY:
-				// put your function <add to inventory a single model> here
+				addInventory();
 				break;
 			case PURCHASE:
 				// put your function <purchase one or more models for a customer> here
