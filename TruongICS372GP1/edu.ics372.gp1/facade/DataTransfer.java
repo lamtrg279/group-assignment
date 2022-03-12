@@ -28,6 +28,7 @@ public abstract class DataTransfer {
 	private double applianceRepairCost;
 	private double applianceCapacity;
 	private double applianceMaximumHeatingOutput;
+	private String backorderId;
 
 	/**
 	 * This sets all fields to "none"
@@ -138,6 +139,14 @@ public abstract class DataTransfer {
 
 	public void setApplianceMaximumHeatingOutput(double applianceMaximumHeatingOutput) {
 		this.applianceMaximumHeatingOutput = applianceMaximumHeatingOutput;
+	}
+
+	public String getBackorderId() {
+		return backorderId;
+	}
+
+	public void setBackorderId(String backorderId) {
+		this.backorderId = backorderId;
 	}
 
 	/**

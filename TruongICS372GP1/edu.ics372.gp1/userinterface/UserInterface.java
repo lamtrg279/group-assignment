@@ -277,6 +277,38 @@ public class UserInterface {
 	}
 
 	/**
+	 * Method to be called for purchasing a model. Prompts the user for the
+	 * appropriate values and uses the appropriate Company method
+	 */
+	public void purchaseModel() {
+		Request.instance().setCustomerId(getToken("Enter customer ID"));
+		Result result = company.searchCustomer(Request.instance());
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("No such customer with id " + Request.instance().getCustomerId() + " in Company");
+			return;
+		}
+		do {
+			Request.instance().setApplianceId(getToken("Enter appliance ID"));
+			Request.instance().setApplianceQuantity(getNumber("Enter quantity"));
+			result = company.purchaseModel(Request.instance());
+			switch (result.getResultCode()) {
+			case Result.APPLIANCE_NOT_FOUND:
+				System.out.println("No such appliance with id " + Request.instance().getApplianceId() + " in Company");
+				break;
+			case Result.OPERATION_COMPLETED:
+				System.out.println("Purchase by customer " + result.getCustomerName() + " for appliance "
+						+ result.getApplianceName() + " is completed");
+				break;
+			default:
+				System.out.println("An error has occured");
+			}
+			if (result.getBackorderId() != null) {
+				System.out.println("Backorder id is " + result.getBackorderId());
+			}
+		} while (yesOrNo("Purchase more appliance? "));
+	}
+
+	/**
 	 * Display all customers
 	 */
 	public void getCustomers() {
@@ -297,14 +329,16 @@ public class UserInterface {
 	 */
 	public void enrollInRepairPlan() {
 		Request.instance().setCustomerId(getToken("Enter customer ID"));
+		Result result = company.searchCustomer(Request.instance());
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("No such customer with id " + Request.instance().getCustomerId() + " in Company");
+			return;
+		}
 		Request.instance().setApplianceId(getToken("Enter appliance ID"));
-		Result result = company.enrollRepairPlan(Request.instance());
+		result = company.enrollRepairPlan(Request.instance());
 		switch (result.getResultCode()) {
 		case Result.APPLIANCE_NOT_FOUND:
 			System.out.println("No such appliance with id " + Request.instance().getApplianceId() + " in Company");
-			break;
-		case Result.CUSTOMER_NOT_FOUND:
-			System.out.println("No such customer with id " + Request.instance().getCustomerId() + " in Company");
 			break;
 		case Result.APPLIANCE_NO_REPAIR_PLAN:
 			System.out.println(
@@ -387,7 +421,7 @@ public class UserInterface {
 				addInventory();
 				break;
 			case PURCHASE:
-				// put your function <purchase one or more models for a customer> here
+				purchaseModel();
 				break;
 			case FULFILL_BACKORDER:
 				// put your function <fulfill a single backorder> here

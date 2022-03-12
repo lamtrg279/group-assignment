@@ -8,10 +8,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import collections.BackOrderList;
 import collections.Catalog;
 import collections.CustomerList;
 import collections.RepairPlanList;
 import entities.Appliance;
+import entities.BackOrder;
 import entities.ClothDryer;
 import entities.ClothWasher;
 import entities.Customer;
@@ -32,6 +34,9 @@ public class Company implements Serializable {
 	private Catalog catalog = Catalog.getInstance();
 	private CustomerList customers = CustomerList.getInstance();
 	private RepairPlanList repairPlans = RepairPlanList.getInstance();
+	private BackOrderList backorders = BackOrderList.getInstance();
+	private double salesRevenue = 0;
+	private double repairPlanRevenue = 0;
 	private static Company company;
 
 	/**
@@ -141,6 +146,45 @@ public class Company implements Serializable {
 	}
 
 	/**
+	 * Organizes the operation for purchase an appliance
+	 * 
+	 * @param customerId  customer's id
+	 * @param applianceId appliance's id
+	 * @return indication of the outcome
+	 */
+	public Result purchaseModel(Request request) {
+		Result result = new Result();
+		Customer customer = customers.search(request.getCustomerId());
+		if (customer == null) {
+			result.setResultCode(Result.CUSTOMER_NOT_FOUND);
+			return result;
+		}
+		result.setCustomerField(customer);
+		Appliance appliance = catalog.search(request.getApplianceId());
+		if (appliance == null) {
+			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
+			return result;
+		}
+		result.setApplianceField(appliance);
+		if (appliance.getQuantity() >= request.getApplianceQuantity()) {
+			appliance.setQuantity(appliance.getQuantity() - request.getApplianceQuantity());
+			company.updateSalesRevenue(appliance.getPrice() * request.getApplianceQuantity());
+		} else if (appliance instanceof Furnace) {
+			company.updateSalesRevenue(appliance.getPrice() * request.getApplianceQuantity());
+			appliance.setQuantity(0);
+		} else {
+			company.updateSalesRevenue(appliance.getPrice() * appliance.getQuantity());
+			BackOrder backorder = new BackOrder(customer, appliance,
+					request.getApplianceQuantity() - appliance.getQuantity());
+			appliance.setQuantity(0);
+			result.setBackorderId(backorder.getId());
+			backorders.insertBackorder(backorder);
+		}
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		return result;
+	}
+
+	/**
 	 * Organizes the operation for enrolling a customer in a repair plan
 	 * 
 	 * @param customerId  customer's id
@@ -168,6 +212,24 @@ public class Company implements Serializable {
 		RepairPlan repairPlan = new RepairPlan(customer, appliance);
 		repairPlans.addRepairPlan(repairPlan);
 		result.setResultCode(Result.OPERATION_COMPLETED);
+		return result;
+	}
+
+	/**
+	 * Search a given customer
+	 * 
+	 * @param customerId id of the customer
+	 * @return true iff the customer is in the customerlist
+	 */
+	public Result searchCustomer(Request request) {
+		Result result = new Result();
+		Customer customer = customers.search(request.getCustomerId());
+		if (customer == null) {
+			result.setResultCode(Result.CUSTOMER_NOT_FOUND);
+		} else {
+			result.setResultCode(Result.OPERATION_COMPLETED);
+			result.setCustomerField(customer);
+		}
 		return result;
 	}
 
@@ -223,6 +285,30 @@ public class Company implements Serializable {
 
 	public Iterator<Result> getUsersInRepairPlans() {
 		return new SafeRepairPlanIterator(repairPlans.iterator());
+	}
+
+	public RepairPlanList getRepairPlans() {
+		return repairPlans;
+	}
+
+	public void setRepairPlans(RepairPlanList repairPlans) {
+		this.repairPlans = repairPlans;
+	}
+
+	public double getSalesRevenue() {
+		return salesRevenue;
+	}
+
+	public void updateSalesRevenue(double salesRevenue) {
+		this.salesRevenue += salesRevenue;
+	}
+
+	public double getRepairPlanRevenue() {
+		return repairPlanRevenue;
+	}
+
+	public void updateRepairPlanRevenue(double repairPlanRevenue) {
+		this.repairPlanRevenue += repairPlanRevenue;
 	}
 
 }

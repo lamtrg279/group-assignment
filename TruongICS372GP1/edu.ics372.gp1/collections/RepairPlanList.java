@@ -8,7 +8,7 @@ import java.util.List;
 import entities.RepairPlan;
 
 /**
- * Maintains a lsit of RepairPlan objects. It is used by both Customer and
+ * Maintains a list of RepairPlan objects. It is used by both Customer and
  * Appliance
  */
 public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
@@ -34,6 +34,11 @@ public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
 	 */
 	public boolean addRepairPlan(RepairPlan repairPlan) {
 		repairPlans.add(repairPlan);
+		return true;
+	}
+
+	public boolean removeRepairPlan(RepairPlan repairPlan) {
+		repairPlans.remove(repairPlan);
 		return true;
 	}
 
