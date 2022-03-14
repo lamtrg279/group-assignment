@@ -370,6 +370,23 @@ public class UserInterface {
 	}
 
 	/**
+	 * Display customer's info and appliance's info in back order
+	 */
+	public void getBackOrders() {
+		Iterator<Result> iterator = company.getBackOrders();
+		System.out.println(
+				"List of Backorders (Customer Name, Customer ID, Appliance brand, Appliance model and quantity)");
+		while (iterator.hasNext()) {
+			Result result = iterator.next();
+			System.out.println(
+					result.getCustomerName() + ", " + result.getCustomerId() + ", " + result.getApplianceBrand() + ", "
+							+ result.getApplianceName() + ", " + result.getApplianceQuantity());
+		}
+		System.out.println("End of List");
+
+	}
+
+	/**
 	 * Method to be called for saving the Company object. Uses the appropriate
 	 * Company method for saving.
 	 * 
@@ -449,7 +466,7 @@ public class UserInterface {
 				getCustomers();
 				break;
 			case LIST_ALL_BACKORDERS:
-				// put your function <list all backorders> here
+				getBackOrders();
 				break;
 			case SAVE:
 				save();

@@ -1,6 +1,7 @@
 package facade;
 
 import entities.Appliance;
+import entities.BackOrder;
 import entities.ClothDryer;
 import entities.ClothWasher;
 import entities.Customer;
@@ -218,6 +219,21 @@ public abstract class DataTransfer {
 			applianceMaximumHeatingOutput = ((Furnace) appliance).getMaximumHeatOutput();
 		}
 
+	}
+
+	/**
+	 * Sets all customer and appliance fields using the BackOrder parameter
+	 * 
+	 * @param backOrder The backOrder fields should be copied
+	 */
+	public void setBackOrderField(BackOrder backOrder) {
+		Appliance appliance = backOrder.getAppliance();
+		applianceBrand = appliance.getBrand();
+		applianceName = appliance.getModel();
+		applianceQuantity = backOrder.getBackOrderQuantity();
+		Customer customer = backOrder.getCustomer();
+		customerName = customer.getName();
+		customerId = customer.getId();
 	}
 
 	/**
