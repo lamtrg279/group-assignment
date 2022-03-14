@@ -23,6 +23,7 @@ import entities.KitchenRange;
 import entities.Refrigerator;
 import entities.RepairPlan;
 import iterators.SafeApplianceIterator;
+import iterators.SafeBackOrderIterator;
 import iterators.SafeCustomerIterator;
 import iterators.SafeRepairPlanIterator;
 
@@ -285,6 +286,10 @@ public class Company implements Serializable {
 
 	public Iterator<Result> getUsersInRepairPlans() {
 		return new SafeRepairPlanIterator(repairPlans.iterator());
+	}
+
+	public Iterator<Result> getBackOrders() {
+		return new SafeBackOrderIterator(backorders.iterator());
 	}
 
 	public RepairPlanList getRepairPlans() {
