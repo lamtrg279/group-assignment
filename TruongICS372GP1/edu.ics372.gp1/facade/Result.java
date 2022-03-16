@@ -13,6 +13,7 @@ public class Result extends DataTransfer {
 	public static final int APPLIANCE_NOT_FOUND = 3;
 	public static final int CUSTOMER_NOT_FOUND = 4;
 	public static final int APPLIANCE_NO_REPAIR_PLAN = 6;
+	public static final int BACKORDER_NOT_FOUND = 7;
 
 	private int resultCode;
 

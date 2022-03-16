@@ -9,7 +9,7 @@ import entities.BackOrder;
 
 public class BackOrderList implements Iterable<BackOrder>, Serializable {
 	private static final long serialVersionUID = 1L;
-	private List<BackOrder> backorders = new LinkedList<BackOrder>();
+	private List<BackOrder> backOrders = new LinkedList<BackOrder>();
 	private static BackOrderList backorderList;
 
 	private BackOrderList() {
@@ -28,12 +28,12 @@ public class BackOrderList implements Iterable<BackOrder>, Serializable {
 	 * @param backorder The backorder to be insert
 	 */
 	public void insertBackorder(BackOrder backorder) {
-		backorders.add(backorder);
+		backOrders.add(backorder);
 	}
 
 	@Override
 	public Iterator<BackOrder> iterator() {
-		return backorders.iterator();
+		return backOrders.iterator();
 	}
 
 	/**
@@ -44,12 +44,16 @@ public class BackOrderList implements Iterable<BackOrder>, Serializable {
 	 * 
 	 */
 	public BackOrder search(String backorderId) {
-		for (Iterator<BackOrder> iterator = backorders.iterator(); iterator.hasNext();) {
+		for (Iterator<BackOrder> iterator = backOrders.iterator(); iterator.hasNext();) {
 			BackOrder backorder = iterator.next();
 			if (backorder.getId().equals(backorderId)) {
 				return backorder;
 			}
 		}
 		return null;
+	}
+
+	public void removeBackOrder(BackOrder backOrder) {
+		backOrders.remove(backOrder);
 	}
 }
