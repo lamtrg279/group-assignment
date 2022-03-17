@@ -6,10 +6,19 @@ import java.util.NoSuchElementException;
 import entities.BackOrder;
 import facade.Result;
 
+/**
+ * This Iterator implementation supplies a "read-only" version of BackOrder
+ * objects.
+ */
 public class SafeBackOrderIterator implements Iterator<Result> {
 	private Iterator<BackOrder> iterator;
 	private Result result = new Result();
 
+	/**
+	 * The user of SafeBackOrderIterator must supply an Iterator to BackOrder
+	 * 
+	 * @param iterator Iterator<BackOrder>
+	 */
 	public SafeBackOrderIterator(Iterator<BackOrder> iterator) {
 		this.iterator = iterator;
 	}

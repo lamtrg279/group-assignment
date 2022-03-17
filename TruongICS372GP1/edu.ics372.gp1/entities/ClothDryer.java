@@ -30,4 +30,9 @@ public class ClothDryer extends Appliance implements Serializable {
 	public void setRepairCost(double repairCost) {
 		this.repairCost = repairCost;
 	}
+
+	@Override
+	public String toString() {
+		return "ClothDryer [repairCost=" + repairCost + ", toString()=" + super.toString() + "]";
+	}
 }

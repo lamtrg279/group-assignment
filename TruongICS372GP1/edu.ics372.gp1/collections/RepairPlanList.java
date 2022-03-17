@@ -37,6 +37,12 @@ public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
 		return true;
 	}
 
+	/**
+	 * Remove a RepairPlan object from the list
+	 * 
+	 * @param repairPlan the RepairPlan object
+	 * @return true
+	 */
 	public boolean removeRepairPlan(RepairPlan repairPlan) {
 		for (int i = 0; i < repairPlans.size(); i++) {
 			if (repairPlans.get(i).getAppliance().getId().equals(repairPlan.getAppliance().getId())
@@ -51,6 +57,11 @@ public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
 	@Override
 	public Iterator<RepairPlan> iterator() {
 		return repairPlans.iterator();
+	}
+
+	@Override
+	public String toString() {
+		return repairPlans.toString();
 	}
 
 }

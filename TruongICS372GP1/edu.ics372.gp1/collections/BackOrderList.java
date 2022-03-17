@@ -7,6 +7,9 @@ import java.util.List;
 
 import entities.BackOrder;
 
+/**
+ * The collections class for BackOrder objects
+ */
 public class BackOrderList implements Iterable<BackOrder>, Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<BackOrder> backOrders = new LinkedList<BackOrder>();
@@ -25,7 +28,7 @@ public class BackOrderList implements Iterable<BackOrder>, Serializable {
 	/**
 	 * Inserts a backorder into the collection
 	 * 
-	 * @param backorder The backorder to be insert
+	 * @param backorder The backorder to be inserted
 	 */
 	public void insertBackorder(BackOrder backorder) {
 		backOrders.add(backorder);
@@ -53,7 +56,18 @@ public class BackOrderList implements Iterable<BackOrder>, Serializable {
 		return null;
 	}
 
+	/**
+	 * Removes a backorder in the collection
+	 * 
+	 * @param backorder The backorder to be removed
+	 */
 	public void removeBackOrder(BackOrder backOrder) {
 		backOrders.remove(backOrder);
 	}
+
+	@Override
+	public String toString() {
+		return backOrders.toString();
+	}
+
 }

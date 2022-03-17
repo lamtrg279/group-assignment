@@ -31,4 +31,9 @@ public class Refrigerator extends Appliance implements Serializable {
 		this.capacity = capacity;
 	}
 
+	@Override
+	public String toString() {
+		return "Refrigerator [capacity=" + capacity + ", toString()=" + super.toString() + "]";
+	}
+
 }

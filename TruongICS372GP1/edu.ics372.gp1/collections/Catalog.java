@@ -57,4 +57,9 @@ public class Catalog implements Iterable<Appliance>, Serializable {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return appliances.toString();
+	}
+
 }

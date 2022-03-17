@@ -19,4 +19,9 @@ public class KitchenRange extends Appliance implements Serializable {
 	public KitchenRange(String brand, String model, double price, int type) {
 		super(brand, model, price, type);
 	}
+
+	@Override
+	public String toString() {
+		return "KitchenRange [toString()=" + super.toString() + "]";
+	}
 }

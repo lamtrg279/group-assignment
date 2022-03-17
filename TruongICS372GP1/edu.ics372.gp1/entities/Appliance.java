@@ -39,6 +39,11 @@ public class Appliance implements Serializable {
 	public Appliance() {
 	}
 
+	/**
+	 * Update quantity of this appliance in the inventory
+	 * 
+	 * @param applianceQuantity Quantity to add
+	 */
 	public void updateQuantity(int applianceQuantity) {
 		this.quantity += applianceQuantity;
 	}
@@ -127,6 +132,12 @@ public class Appliance implements Serializable {
 
 	public static void retrieve(ObjectInputStream input) throws ClassNotFoundException, IOException {
 		idCounter = (int) input.readObject();
+	}
+
+	@Override
+	public String toString() {
+		return "Appliance [brand=" + brand + ", model=" + model + ", id=" + id + ", price=" + price + ", quantity="
+				+ quantity + ", type=" + type + "]";
 	}
 
 }
