@@ -35,7 +35,7 @@ public class Company implements Serializable {
 	private Catalog catalog = Catalog.getInstance();
 	private CustomerList customers = CustomerList.getInstance();
 	private RepairPlanList repairPlans = RepairPlanList.getInstance();
-	private BackOrderList backorders = BackOrderList.getInstance();
+	private BackOrderList backOrders = BackOrderList.getInstance();
 	private double salesRevenue = 0;
 	private double repairPlanRevenue = 0;
 	private static Company company;
@@ -110,24 +110,6 @@ public class Company implements Serializable {
 	/**
 	 * Organizes the operations for adding a member
 	 * 
-	 * @param applianceId Appliance ID
-	 * @return indication of the outcome
-	 */
-	public Result addInventory(Request request) {
-		Result result = new Result();
-		Appliance appliance = catalog.search(request.getApplianceId());
-		if (appliance == null) {
-			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
-			return result;
-		}
-		appliance.updateQuantity(request.getApplianceQuantity());
-		result.setResultCode(Result.OPERATION_COMPLETED);
-		return result;
-	}
-
-	/**
-	 * Organizes the operations for adding a member
-	 * 
 	 * @param name    Customer name
 	 * @param address Customer address
 	 * @param phone   Customer phone
@@ -143,6 +125,24 @@ public class Company implements Serializable {
 			return result;
 		}
 		result.setResultCode(Result.OPERATION_FAILED);
+		return result;
+	}
+
+	/**
+	 * Organizes the operations for adding a member
+	 * 
+	 * @param applianceId Appliance ID
+	 * @return indication of the outcome
+	 */
+	public Result addInventory(Request request) {
+		Result result = new Result();
+		Appliance appliance = catalog.search(request.getApplianceId());
+		if (appliance == null) {
+			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
+			return result;
+		}
+		appliance.updateQuantity(request.getApplianceQuantity());
+		result.setResultCode(Result.OPERATION_COMPLETED);
 		return result;
 	}
 
@@ -179,7 +179,7 @@ public class Company implements Serializable {
 					request.getApplianceQuantity() - appliance.getQuantity());
 			appliance.setQuantity(0);
 			result.setBackorderId(backorder.getId());
-			backorders.insertBackorder(backorder);
+			backOrders.insertBackorder(backorder);
 		}
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		return result;
@@ -213,6 +213,39 @@ public class Company implements Serializable {
 		RepairPlan repairPlan = new RepairPlan(customer, appliance);
 		repairPlans.addRepairPlan(repairPlan);
 		result.setResultCode(Result.OPERATION_COMPLETED);
+		return result;
+	}
+
+	/**
+	 * Organizes operation for removing single customer appliance from repair
+	 * 
+	 * @param request
+	 * @return the appliance removed from plan and from which customer
+	 */
+	public Result removeSingleRepairPlan(Request request) {
+		Result result = new Result();
+		Customer customer = customers.search(request.getCustomerId());
+		if (customer == null) {
+			result.setResultCode(Result.CUSTOMER_NOT_FOUND);
+			return result;
+		}
+		result.setCustomerField(customer);
+		Appliance appliance = catalog.search(request.getApplianceId());
+		if (appliance == null) {
+			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
+			return result;
+		}
+		if (appliance.getType() != 1 && appliance.getType() != 2) {
+			result.setResultCode(Result.APPLIANCE_NO_REPAIR_PLAN);
+			return result;
+		}
+		result.setApplianceField(appliance);
+		RepairPlan repairPlan = new RepairPlan(customer, appliance);
+		if (repairPlans.removeRepairPlan(repairPlan)) {
+			result.setResultCode(Result.OPERATION_COMPLETED);
+		} else {
+			result.setResultCode(Result.OPERATION_FAILED);
+		}
 		return result;
 	}
 
@@ -289,7 +322,7 @@ public class Company implements Serializable {
 	}
 
 	public Iterator<Result> getBackOrders() {
-		return new SafeBackOrderIterator(backorders.iterator());
+		return new SafeBackOrderIterator(backOrders.iterator());
 	}
 
 	public RepairPlanList getRepairPlans() {

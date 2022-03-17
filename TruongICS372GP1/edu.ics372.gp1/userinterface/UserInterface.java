@@ -128,10 +128,16 @@ public class UserInterface {
 			try {
 				String item = getToken(prompt);
 				Integer number = Integer.valueOf(item);
+				if (number.intValue() < 0) {
+					throw new IllegalArgumentException("Please input a positive number");
+				}
 				return number.intValue();
 			} catch (NumberFormatException e) {
 				System.out.println("Please input a number ");
+			} catch (IllegalArgumentException e) {
+				System.out.println(e.getMessage());
 			}
+
 		} while (true);
 	}
 
@@ -217,28 +223,20 @@ public class UserInterface {
 	}
 
 	/**
-	 * Get and print all or some appliances
+	 * Method to be called for adding a customer. Prompts the user for the
+	 * appropriate values and uses the appropriate Company method for adding the
+	 * customer.
 	 */
-	public void getAppliances() {
-		Iterator<Result> iterator = company.getAppliances();
-		Request.instance().setApplianceType(getNumber(
-				"Enter type of appliance: 0 for all appliances, 1 for ClothWasher, 2 for ClothDryer, 3 for KitchenRange, 4 for DishWasher, 5 for Refrigerator, 6 for Furnace"));
-		System.out.println("List of appliances (brand, name, id, price, quantity)");
-		while (iterator.hasNext()) {
-			Result result = iterator.next();
-			if (Request.instance().getApplianceType() == 0) {
-				System.out.println(
-						result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
-								+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
-			} else {
-				if (result.getApplianceType() == Request.instance().getApplianceType()) {
-					System.out.println(
-							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
-									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
-				}
-			}
+	public void addCustomer() {
+		Request.instance().setCustomerName(getName("Enter customer name"));
+		Request.instance().setCustomerAddress(getName("Enter customer address"));
+		Request.instance().setCustomerPhone(getName("Enter customer phone"));
+		Result result = company.addCustomer(Request.instance());
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Could not add customer");
+		} else {
+			System.out.println(result.getCustomerName() + "'s id is " + result.getCustomerId());
 		}
-		System.out.println("End of listing");
 	}
 
 	/**
@@ -256,23 +254,9 @@ public class UserInterface {
 			System.out.println("Inventory has been added to model ID: " + Request.instance().getApplianceId()
 					+ " for quantity " + Request.instance().getApplianceQuantity());
 			break;
-		}
-	}
-
-	/**
-	 * Method to be called for adding a customer. Prompts the user for the
-	 * appropriate values and uses the appropriate Company method for adding the
-	 * customer.
-	 */
-	public void addCustomer() {
-		Request.instance().setCustomerName(getName("Enter customer name"));
-		Request.instance().setCustomerAddress(getName("Enter customer address"));
-		Request.instance().setCustomerPhone(getName("Enter customer phone"));
-		Result result = company.addCustomer(Request.instance());
-		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
-			System.out.println("Could not add customer");
-		} else {
-			System.out.println(result.getCustomerName() + "'s id is " + result.getCustomerId());
+		default:
+			System.out.println("An error has occured");
+			break;
 		}
 	}
 
@@ -309,20 +293,6 @@ public class UserInterface {
 	}
 
 	/**
-	 * Display all customers
-	 */
-	public void getCustomers() {
-		Iterator<Result> iterator = company.getCustomers();
-		System.out.println("List of customers (name, address, phone, id)");
-		while (iterator.hasNext()) {
-			Result result = iterator.next();
-			System.out.println(result.getCustomerName() + ", " + result.getCustomerAddress() + ", "
-					+ result.getCustomerPhone() + ", " + result.getCustomerId());
-		}
-		System.out.println("End of listing");
-	}
-
-	/**
 	 * Method to be called for enroll customers into repair plan. Prompts the user
 	 * for the appropriate values and uses the appropriate Company method for
 	 * enrolling customers
@@ -355,6 +325,86 @@ public class UserInterface {
 	}
 
 	/**
+	 * Method to be called for removing a customers from a single appliance repair
+	 * plan. Prompts the user for the appropriate values and uses the appropriate
+	 * Company method to remove customers from single plan
+	 */
+	public void removeCustomerFromPlan() {
+		Request.instance().setCustomerId(getToken("Enter customer ID"));
+		Request.instance().setApplianceId(getToken("Enter appliance ID"));
+		Result result = company.removeSingleRepairPlan(Request.instance());
+		switch (result.getResultCode()) {
+		case Result.APPLIANCE_NOT_FOUND:
+			System.out.println("No such appliance with id " + Request.instance().getApplianceId() + " in Company");
+			break;
+		case Result.CUSTOMER_NOT_FOUND:
+			System.out.println("No such customer with id " + Request.instance().getCustomerId() + " in Company");
+			break;
+		case Result.APPLIANCE_NO_REPAIR_PLAN:
+			System.out.println(
+					"Appliance with id " + Request.instance().getApplianceId() + " doesn't have a repair plan");
+			break;
+		case Result.OPERATION_COMPLETED:
+			System.out.println("A repair plan was removed for customer " + result.getCustomerName() + " for appliance "
+					+ result.getApplianceName());
+			break;
+		case Result.OPERATION_FAILED:
+			System.out.println("Couldn't find a customer associated with that appliance");
+			break;
+		default:
+			System.out.println("An error has occured");
+
+		}
+
+	}
+
+	/**
+	 * Method to be called for charging all repair plans. Uses the appropriate
+	 * Company method for charing all repair plans
+	 */
+	public void chargeAllRepairPlans() {
+		Iterator<Result> iterator = company.getUsersInRepairPlans();
+		while (iterator.hasNext()) {
+			Result result = iterator.next();
+			company.updateRepairPlanRevenue(result.getApplianceRepairCost());
+		}
+		System.out.println("Charged For All Repair Plans");
+	}
+
+	/**
+	 * Method to be called for print sales and repair plan revenue.
+	 */
+	public void printRevenueAll() {
+		System.out.println("Sales Revenue: " + company.getSalesRevenue());
+		System.out.println("Repair Plans Revenue: " + company.getRepairPlanRevenue());
+	}
+
+	/**
+	 * Get and print all or some appliances
+	 */
+	public void getAppliances() {
+		Iterator<Result> iterator = company.getAppliances();
+		Request.instance().setApplianceType(getNumber(
+				"Enter type of appliance: 0 for all appliances, 1 for ClothWasher, 2 for ClothDryer, 3 for KitchenRange, 4 for DishWasher, 5 for Refrigerator, 6 for Furnace"));
+		System.out.println("List of appliances (brand, name, id, price, quantity)");
+		while (iterator.hasNext()) {
+			Result result = iterator.next();
+			if (Request.instance().getApplianceType() == 0) {
+				System.out.println(
+						result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+								+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+			} else {
+				if (result.getApplianceType() == Request.instance().getApplianceType()) {
+					System.out.println(
+							result.getApplianceBrand() + " " + result.getApplianceName() + " " + result.getApplianceId()
+									+ " " + result.getAppliancePrice() + " " + result.getApplianceQuantity());
+				}
+			}
+		}
+		System.out.println("End of listing");
+	}
+
+	/**
 	 * Display customer's info and appliance's info in repair plan
 	 */
 	public void getUsersInRepairPlans() {
@@ -365,6 +415,20 @@ public class UserInterface {
 			System.out.println(result.getCustomerName() + ", " + result.getCustomerAddress() + ", "
 					+ result.getCustomerPhone() + ", " + result.getCustomerId() + ", " + result.getApplianceBrand()
 					+ ", " + result.getApplianceName() + ", " + result.getApplianceRepairCost());
+		}
+		System.out.println("End of listing");
+	}
+
+	/**
+	 * Display all customers
+	 */
+	public void getCustomers() {
+		Iterator<Result> iterator = company.getCustomers();
+		System.out.println("List of customers (name, address, phone, id)");
+		while (iterator.hasNext()) {
+			Result result = iterator.next();
+			System.out.println(result.getCustomerName() + ", " + result.getCustomerAddress() + ", "
+					+ result.getCustomerPhone() + ", " + result.getCustomerId());
 		}
 		System.out.println("End of listing");
 	}
@@ -441,20 +505,19 @@ public class UserInterface {
 				purchaseModel();
 				break;
 			case FULFILL_BACKORDER:
-				// put your function <fulfill a single backorder> here
+				// method for fulfilling backorder
 				break;
 			case ENROLL_IN_REPAIR_PLAN:
 				enrollInRepairPlan();
 				break;
 			case WITHDRAW_CUSTOMER_FROM_REPAIR_PLAN:
-				// put your function <withdraw customer from a repair plan for a single
-				// appliance> here
+				removeCustomerFromPlan();
 				break;
 			case CHARGE_ALL_REPAIR_PLANS:
-				// put your function <charge all repair plans> here
+				chargeAllRepairPlans();
 				break;
 			case PRINT_ALL_REVENUE:
-				// put your function <print revenue from all sales and repair plans> here
+				printRevenueAll();
 				break;
 			case LIST_APPLIANCES:
 				getAppliances();

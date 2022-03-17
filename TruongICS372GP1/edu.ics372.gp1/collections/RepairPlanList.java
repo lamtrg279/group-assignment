@@ -38,12 +38,19 @@ public class RepairPlanList implements Iterable<RepairPlan>, Serializable {
 	}
 
 	public boolean removeRepairPlan(RepairPlan repairPlan) {
-		repairPlans.remove(repairPlan);
-		return true;
+		for (int i = 0; i < repairPlans.size(); i++) {
+			if (repairPlans.get(i).getAppliance().getId().equals(repairPlan.getAppliance().getId())
+					&& repairPlans.get(i).getCustomer().getId().equals(repairPlan.getCustomer().getId())) {
+				repairPlans.remove(i);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public Iterator<RepairPlan> iterator() {
 		return repairPlans.iterator();
 	}
+
 }
