@@ -17,10 +17,6 @@ public class Customer implements Serializable {
 	private static final String CUSTOMER_STRING = "C";
 	private static int idCounter;
 
-	public String getName() {
-		return name;
-	}
-
 	/**
 	 * Creates a single customer
 	 * 
@@ -34,7 +30,11 @@ public class Customer implements Serializable {
 		this.phone = phone;
 		id = CUSTOMER_STRING + ++idCounter;
 	}
-
+	
+	public String getName() {
+		return name;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
