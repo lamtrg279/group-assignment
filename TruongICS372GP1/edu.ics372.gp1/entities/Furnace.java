@@ -30,4 +30,9 @@ public class Furnace extends Appliance implements Serializable {
 	public void setMaximumHeatOutput(double maximumHeatOutput) {
 		this.maximumHeatOutput = maximumHeatOutput;
 	}
+
+	@Override
+	public String toString() {
+		return "Furnace [maximumHeatOutput=" + maximumHeatOutput + ", toString()=" + super.toString() + "]";
+	}
 }

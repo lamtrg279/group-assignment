@@ -227,6 +227,7 @@ public abstract class DataTransfer {
 	 * @param backOrder The backOrder fields should be copied
 	 */
 	public void setBackOrderField(BackOrder backOrder) {
+		backorderId = backOrder.getId();
 		Appliance appliance = backOrder.getAppliance();
 		applianceBrand = appliance.getBrand();
 		applianceName = appliance.getModel();

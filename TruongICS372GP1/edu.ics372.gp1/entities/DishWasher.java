@@ -19,4 +19,10 @@ public class DishWasher extends Appliance implements Serializable {
 	public DishWasher(String brand, String model, double price, int type) {
 		super(brand, model, price, type);
 	}
+
+	@Override
+	public String toString() {
+		return "DishWasher [toString()=" + super.toString() + "]";
+	}
+
 }

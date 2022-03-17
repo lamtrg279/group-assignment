@@ -36,4 +36,9 @@ public class RepairPlan implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+	@Override
+	public String toString() {
+		return "RepairPlan [appliance=" + appliance + ", customer=" + customer + "]";
+	}
 }

@@ -1,6 +1,6 @@
-/collections/
-/entities/
+/tests/
 /facade/
-/iterators/
-/module-info.class
 /userinterface/
+/entities/
+/collections/
+/iterators/

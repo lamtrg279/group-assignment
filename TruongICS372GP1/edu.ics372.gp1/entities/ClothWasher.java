@@ -31,4 +31,9 @@ public class ClothWasher extends Appliance implements Serializable {
 		this.repairCost = repairCost;
 	}
 
+	@Override
+	public String toString() {
+		return "ClothWasher [repairCost=" + repairCost + ", toString()=" + super.toString() + "]";
+	}
+
 }

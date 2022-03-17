@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 import facade.Company;
 import facade.Request;
 import facade.Result;
+import tests.AutomatedTester;
 
 /**
  * 
@@ -46,6 +47,9 @@ public class UserInterface {
 		if (yesOrNo("Look for saved data and use it?")) {
 			retrieve();
 		} else {
+			if (yesOrNo("Do you want to generate a test bed and invoke the functionality using asserts?")) {
+				AutomatedTester.main(null);
+			}
 			company = Company.instance();
 		}
 	}
@@ -293,6 +297,25 @@ public class UserInterface {
 	}
 
 	/**
+	 * Method to be called for fufilling back-order. Prompts the user for the
+	 * appropriate values and uses the appropriate Company method for fulfilling
+	 * back-order
+	 */
+	public void fulfillBackorder() {
+		Request.instance().setBackorderId(getToken("Enter backorder ID"));
+		Result result = company.fulfillBackOrder(Request.instance());
+		switch (result.getResultCode()) {
+		case Result.BACKORDER_NOT_FOUND:
+			System.out.println("No such back order ID " + Request.instance().getBackorderId() + " in back order list");
+			break;
+		case Result.OPERATION_COMPLETED:
+			System.out.println("Fulfilling the back order is completed for customer " + result.getCustomerName()
+					+ " for appliance " + result.getApplianceName());
+			break;
+		}
+	}
+
+	/**
 	 * Method to be called for enroll customers into repair plan. Prompts the user
 	 * for the appropriate values and uses the appropriate Company method for
 	 * enrolling customers
@@ -349,7 +372,7 @@ public class UserInterface {
 					+ result.getApplianceName());
 			break;
 		case Result.OPERATION_FAILED:
-			System.out.println("Couldn't find a customer associated with that appliance");
+			System.out.println("Couldn't find a repair plan associated with that appliance and/or customer");
 			break;
 		default:
 			System.out.println("An error has occured");
@@ -505,7 +528,7 @@ public class UserInterface {
 				purchaseModel();
 				break;
 			case FULFILL_BACKORDER:
-				// method for fulfilling backorder
+				fulfillBackorder();
 				break;
 			case ENROLL_IN_REPAIR_PLAN:
 				enrollInRepairPlan();

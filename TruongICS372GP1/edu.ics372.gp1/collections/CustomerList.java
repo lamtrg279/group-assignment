@@ -57,4 +57,10 @@ public class CustomerList implements Iterable<Customer>, Serializable {
 		}
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return customers.toString();
+	}
+
 }

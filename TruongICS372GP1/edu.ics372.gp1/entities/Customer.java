@@ -93,4 +93,9 @@ public class Customer implements Serializable {
 		idCounter = (int) input.readObject();
 	}
 
+	@Override
+	public String toString() {
+		return "Customer [name=" + name + ", address=" + address + ", phone=" + phone + ", id=" + id + "]";
+	}
+
 }

@@ -142,6 +142,8 @@ public class Company implements Serializable {
 			return result;
 		}
 		appliance.updateQuantity(request.getApplianceQuantity());
+		result.setApplianceField(appliance);
+		;
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		return result;
 	}
@@ -186,6 +188,26 @@ public class Company implements Serializable {
 	}
 
 	/**
+	 * Organizes operation for fulfilling back-order.
+	 * 
+	 * @param backOrderId id of the back-order
+	 * @return indication of the outcome
+	 */
+	public Result fulfillBackOrder(Request request) {
+		Result result = new Result();
+		BackOrder backOrder = backOrders.search(request.getBackorderId());
+		if (backOrder == null) {
+			result.setResultCode(Result.BACKORDER_NOT_FOUND);
+			return result;
+		}
+		company.updateSalesRevenue(backOrder.getAppliance().getPrice() * backOrder.getBackOrderQuantity());
+		backOrders.removeBackOrder(backOrder);
+		result.setBackOrderField(backOrder);
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		return result;
+	}
+
+	/**
 	 * Organizes the operation for enrolling a customer in a repair plan
 	 * 
 	 * @param customerId  customer's id
@@ -199,7 +221,6 @@ public class Company implements Serializable {
 			result.setResultCode(Result.CUSTOMER_NOT_FOUND);
 			return result;
 		}
-		result.setCustomerField(customer);
 		Appliance appliance = catalog.search(request.getApplianceId());
 		if (appliance == null) {
 			result.setResultCode(Result.APPLIANCE_NOT_FOUND);
@@ -209,9 +230,9 @@ public class Company implements Serializable {
 			result.setResultCode(Result.APPLIANCE_NO_REPAIR_PLAN);
 			return result;
 		}
-		result.setApplianceField(appliance);
 		RepairPlan repairPlan = new RepairPlan(customer, appliance);
 		repairPlans.addRepairPlan(repairPlan);
+		result.setRepairPlanField(repairPlan);
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		return result;
 	}
@@ -279,6 +300,7 @@ public class Company implements Serializable {
 			company = (Company) input.readObject();
 			Customer.retrieve(input);
 			Appliance.retrieve(input);
+			BackOrder.retrieve(input);
 			return company;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -301,6 +323,7 @@ public class Company implements Serializable {
 			output.writeObject(company);
 			Customer.save(output);
 			Appliance.save(output);
+			BackOrder.save(output);
 			file.close();
 			return true;
 		} catch (IOException ioe) {

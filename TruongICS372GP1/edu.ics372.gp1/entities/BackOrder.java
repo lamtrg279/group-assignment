@@ -1,11 +1,15 @@
 package entities;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
  * Represents a Back order between a customer and an appliance
  */
 public class BackOrder implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private Customer customer;
@@ -46,5 +50,19 @@ public class BackOrder implements Serializable {
 
 	public int getBackOrderQuantity() {
 		return backOrderQuantity;
+	}
+
+	public static void save(ObjectOutputStream output) throws IOException {
+		output.writeObject(idCounter);
+	}
+
+	public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
+		idCounter = (int) input.readObject();
+	}
+
+	@Override
+	public String toString() {
+		return "BackOrder [id=" + id + ", customer=" + customer + ", appliance=" + appliance + ", backOrderQuantity="
+				+ backOrderQuantity + "]";
 	}
 }
